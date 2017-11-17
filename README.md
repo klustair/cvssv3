@@ -1,5 +1,5 @@
 # cvssv3
 
-A Common Vulnerability Scoring System 2.0 (CVSSv2) implementation for golang.
+Package cvssv3 provides parsing and scoring with Common Vulunerability Scoring System version 3.0 (CVSSv3).
 
 by Bunji2
