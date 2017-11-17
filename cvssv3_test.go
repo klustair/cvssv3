@@ -65,3 +65,4 @@ func TestBaseScore(t *testing.T) {
 		}
 	}
 }
+// End of cvssv3_test.go
