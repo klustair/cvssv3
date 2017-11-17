@@ -29,7 +29,7 @@ func (m Vector) Val(x string) float64 {
 		return val_PR(val, m.IsScopeChanged())
 	case "UI":
 		return val_UI(val)
-	case "S": // for compatibility...
+	case "S":
 		if val == "C" {
 			return 1.0 // scope is changed
 		}
@@ -64,7 +64,7 @@ func (m Vector) Val(x string) float64 {
 			return m.Val("UI")
 		}
 		return val_UI(val)
-	case "MS": // for compatibility...
+	case "MS":
 		if val == "X" {
 			return m.Val("S")
 		}
@@ -100,6 +100,7 @@ func (m Vector) Str(x string) string {
 	return "?"
 }
 
+// IsScopeChanged returns that whether m's Scope is changed
 func (m Vector) IsScopeChanged() bool {
 	if m.Val("S") == 1.0 {
 		return true
@@ -107,6 +108,7 @@ func (m Vector) IsScopeChanged() bool {
 	return false
 }
 
+// IsScopeChanged returns that whether m's Modified Scope is changed
 func (m Vector) IsModifiedScopeChanged() bool {
 	if m.Val("MS") == 1.0 {
 		return true
@@ -270,6 +272,7 @@ func (m Vector) TemporalScore() float64 {
 	return roundUp1(temp)
 }
 
+// EnvironmentalScore returns m's environmental score.
 func (m Vector) EnvironmentalScore() float64 {
 	m_scope_changed := m.IsModifiedScopeChanged()
 	cr := m.Val("CR")
