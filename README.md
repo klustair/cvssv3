@@ -1,6 +1,6 @@
 # cvssv3
 
-Package cvssv3 provides parsing and scoring with Common Vulunerability Scoring System version 3.0 (CVSSv3).
+A Common Vulnerability Scoring System 3.0 (CVSSv3) implementation for golang.
 
 Inspired by "go-cvss" ( https://github.com/umisama/go-cvss ), but implementated in different way.
 
