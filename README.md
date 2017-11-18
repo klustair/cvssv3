@@ -1,6 +1,6 @@
 # bunji2/cvssv3
 
-A Common Vulnerability Scoring System 3.0 (CVSSv3) implementation for golang.
+A Common Vulnerability Scoring System Version 3.0 (CVSSv3) implementation for golang.
 
 Inspired by "go-cvss" ( https://github.com/umisama/go-cvss ), but implementated in different way.
 
