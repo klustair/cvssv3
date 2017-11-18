@@ -1,4 +1,4 @@
-# cvssv3
+# bunji2/cvssv3
 
 A Common Vulnerability Scoring System 3.0 (CVSSv3) implementation for golang.
 
