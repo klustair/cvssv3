@@ -1,6 +1,6 @@
 // Package cvssv3 provides parsing and scoring with Common Vulunerability
 // Scoring System version 3.0 (CVSSv3).
-// Author: Bunji2 
+// Author: Bunji2
 // Inspired by "go-cvss" ( https://github.com/umisama/go-cvss ),
 // but implementated in different way.
 package cvssv3
@@ -12,12 +12,12 @@ import (
 )
 
 // Vector reprecents a CVSS vector.
-type Vector map[string] string
+type Vector map[string]string
 
 // Val(x) returns float value of m's metrics x
 func (m Vector) Val(x string) float64 {
 	val, ok := m[x]
-	if ! ok {
+	if !ok {
 		return math.NaN()
 	}
 	switch x {
@@ -120,31 +120,31 @@ func (m Vector) IsModifiedScopeChanged() bool {
 // str must valid as CVSS:3.0/base/temporal/environment Vector.
 func ParseVector(str string) (Vector, error) {
 	submatches := regexp.MustCompile(
-		`CVSS:3.0\/` +
-		`AV:([NALP])\/AC:([LH])\/PR:([NLH])\/UI:([NR])\/S:([UC])\/` +
-		`C:([HLN])\/I:([HLN])\/A:([HLN])`+
-		`(?:\/E:([XUPFH])\/RL:([XOTWU])\/RC:([XURC])` +
+		`CVSS:3.[01]\/` +
+			`AV:([NALP])\/AC:([LH])\/PR:([NLH])\/UI:([NR])\/S:([UC])\/` +
+			`C:([HLN])\/I:([HLN])\/A:([HLN])` +
+			`(?:\/E:([XUPFH])\/RL:([XOTWU])\/RC:([XURC])` +
 			`(?:\/CR:([XHML])\/IR:([XHML])\/AR:([XHML])\/MAV:([XNALP])\/` +
-				`MAC:([XLH])\/MPR:([XNLH])\/MUI:([XNR])\/MS:([XUC])\/` +
-				`MC:([XHLN])\/MI:([XHLN])\/MA:([XHLN])` +
+			`MAC:([XLH])\/MPR:([XNLH])\/MUI:([XNR])\/MS:([XUC])\/` +
+			`MC:([XHLN])\/MI:([XHLN])\/MA:([XHLN])` +
 			`)?` +
-		`)?`).FindStringSubmatch(str)
-//	fmt.Printf("%s(%d)", str, len(submatches))
+			`)?`).FindStringSubmatch(str)
+	//	fmt.Printf("%s(%d)", str, len(submatches))
 	if len(submatches) < 9 || submatches[0] != str {
-		return Vector{}, 
+		return Vector{},
 			fmt.Errorf("invalid Vector string: %s(%d)", str, len(submatches))
 	}
 
-	metrics := map[string]string {
+	metrics := map[string]string{
 		// mandatory metrics
-		"AV":  submatches[1],
-		"AC":  submatches[2],
-		"PR":  submatches[3],
-		"UI":  submatches[4],
-		"S":   submatches[5],
-		"C":   submatches[6],
-		"I":   submatches[7],
-		"A":   submatches[8],
+		"AV": submatches[1],
+		"AC": submatches[2],
+		"PR": submatches[3],
+		"UI": submatches[4],
+		"S":  submatches[5],
+		"C":  submatches[6],
+		"I":  submatches[7],
+		"A":  submatches[8],
 
 		// optional metrics
 		"E":   "X",
@@ -164,7 +164,7 @@ func ParseVector(str string) (Vector, error) {
 	}
 	if len(submatches) > 11 {
 		if submatches[9] != "" {
-			metrics["E"] =  submatches[9]
+			metrics["E"] = submatches[9]
 		}
 		if submatches[10] != "" {
 			metrics["RL"] = submatches[10]
@@ -175,13 +175,13 @@ func ParseVector(str string) (Vector, error) {
 	}
 	if len(submatches) > 22 {
 		if submatches[12] != "" {
-			metrics["CR"] =  submatches[12]
+			metrics["CR"] = submatches[12]
 		}
 		if submatches[13] != "" {
-			metrics["IR"] =  submatches[13]
+			metrics["IR"] = submatches[13]
 		}
 		if submatches[14] != "" {
-			metrics["AR"] =  submatches[14]
+			metrics["AR"] = submatches[14]
 		}
 		if submatches[15] != "" {
 			metrics["MAV"] = submatches[15]
@@ -196,16 +196,16 @@ func ParseVector(str string) (Vector, error) {
 			metrics["MUI"] = submatches[18]
 		}
 		if submatches[19] != "" {
-			metrics["MS"] =  submatches[19]
+			metrics["MS"] = submatches[19]
 		}
 		if submatches[20] != "" {
-			metrics["MC"] =  submatches[20]
+			metrics["MC"] = submatches[20]
 		}
 		if submatches[21] != "" {
-			metrics["MI"] =  submatches[21]
+			metrics["MI"] = submatches[21]
 		}
 		if submatches[22] != "" {
-			metrics["MA"] =  submatches[22]
+			metrics["MA"] = submatches[22]
 		}
 	}
 
@@ -216,7 +216,6 @@ func ParseVector(str string) (Vector, error) {
 
 }
 
-
 // String returns formatted m.
 func (m Vector) String() string {
 	prefix := "CVSS:3.0"
@@ -226,14 +225,14 @@ func (m Vector) String() string {
 		"/S:" + m.Str("S") + "/C:" + m.Str("C") +
 		"/I:" + m.Str("I") + "/A:" + m.Str("A")
 
-	temp := "E:" + m.Str("E") + "/RL:" + m.Str("RL") + 
+	temp := "E:" + m.Str("E") + "/RL:" + m.Str("RL") +
 		"/RC:" + m.Str("RC")
 
-	env := "CR:" + m.Str("CR") + "/IR:" + m.Str("IR") + 
-		"/AR:" + m.Str("AR") + "/MAV:" + m.Str("MAV") + 
-		"/MAC:" + m.Str("MAC") + "/MPR:" + m.Str("MPR") + 
-		"/MUI:" + m.Str("MUI") + "/MS:" + m.Str("MS") + 
-		"/MC:" + m.Str("MC") + "/MI:" + m.Str("MI") + 
+	env := "CR:" + m.Str("CR") + "/IR:" + m.Str("IR") +
+		"/AR:" + m.Str("AR") + "/MAV:" + m.Str("MAV") +
+		"/MAC:" + m.Str("MAC") + "/MPR:" + m.Str("MPR") +
+		"/MUI:" + m.Str("MUI") + "/MS:" + m.Str("MS") +
+		"/MC:" + m.Str("MC") + "/MI:" + m.Str("MI") +
 		"/MA:" + m.Str("MA")
 
 	return prefix + "/" + base + "/" + temp + "/" + env
@@ -257,7 +256,7 @@ func (m Vector) BaseScore() float64 {
 	pr := m.Val("PR")
 	ui := m.Val("UI")
 	exploitability := calc_exploitability(av, ac, pr, ui)
-	
+
 	base := calc_base(scope_changed, impact, exploitability)
 	return roundUp1(base)
 }
@@ -315,11 +314,11 @@ func calc_impact(scope_changed bool, isc float64) float64 {
 	if !scope_changed {
 		return 6.42 * isc
 	}
-	return 7.52 * (isc - 0.029) - 3.25 * math.Pow((isc - 0.02), 15.0)
+	return 7.52*(isc-0.029) - 3.25*math.Pow((isc-0.02), 15.0)
 }
 
 func calc_isc(c, i, a float64) float64 {
-	return float64(1.0 - (1.0 - c) * (1.0 - i) * (1.0 - a))
+	return float64(1.0 - (1.0-c)*(1.0-i)*(1.0-a))
 }
 
 func calc_exploitability(av, ac, pr, ui float64) float64 {
@@ -332,12 +331,12 @@ func calc_temporal(base, e, rl, rc float64) float64 {
 
 func calc_modified_isc(cr, ir, ar, c, i, a float64) float64 {
 	return math.Min(
-		float64(1.0 - (1.0 - c * cr) * (1.0 - i * ir) * (1.0 - a * ar)),
+		float64(1.0-(1.0-c*cr)*(1.0-i*ir)*(1.0-a*ar)),
 		0.915)
 }
 
 func roundUp1(val float64) float64 {
-	return math.Ceil(val*10)/10
+	return math.Ceil(val*10) / 10
 }
 
 func val_AV(v string) float64 {
@@ -349,7 +348,7 @@ func val_AV(v string) float64 {
 	case "L":
 		return 0.55
 	}
-//	case "P":
+	//	case "P":
 	return 0.2
 }
 
@@ -358,7 +357,7 @@ func val_AC(v string) float64 {
 	case "L":
 		return 0.77
 	}
-//	case "H":
+	//	case "H":
 	return 0.44
 }
 
@@ -375,7 +374,7 @@ func val_PR(v string, scope_changed bool) float64 {
 		}
 		return 0.27
 	}
-//	case "N":
+	//	case "N":
 	return 0.85
 }
 
@@ -384,7 +383,7 @@ func val_UI(v string) float64 {
 	case "R":
 		return 0.62
 	}
-//	case "N":
+	//	case "N":
 	return 0.85
 }
 
@@ -395,7 +394,7 @@ func val_Impact(v string) float64 {
 	case "L":
 		return 0.22
 	}
-//	case "N":
+	//	case "N":
 	return 0.0
 }
 
@@ -408,7 +407,7 @@ func val_E(v string) float64 {
 	case "U":
 		return 0.91
 	}
-//	case "X", "H":
+	//	case "X", "H":
 	return 1.0
 }
 
@@ -421,7 +420,7 @@ func val_RL(v string) float64 {
 	case "O":
 		return 0.95
 	}
-//	case "X", "U":
+	//	case "X", "U":
 	return 1.0
 }
 
@@ -432,7 +431,7 @@ func val_RC(v string) float64 {
 	case "U":
 		return 0.92
 	}
-//	case "X", "C":
+	//	case "X", "C":
 	return 1.0
 }
 
@@ -443,7 +442,7 @@ func val_Requirements(v string) float64 {
 	case "L":
 		return 0.5
 	}
-//	case "X", "M":
+	//	case "X", "M":
 	return 1.0
 }
 
